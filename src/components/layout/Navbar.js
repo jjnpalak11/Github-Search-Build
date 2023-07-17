@@ -20,7 +20,7 @@ import { Link } from 'react-router-dom'
     )
   }
 Navbar.defaultProps={
-  title: 'Github Finder',
+  title: 'GitHub Search Build',
   icon: 'fa-brands fa-github fa-fw'
 };
 
