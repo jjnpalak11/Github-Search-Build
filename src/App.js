@@ -13,6 +13,7 @@ import {Alert} from './components/layout/Alert';
   state={
     users:[],
     user:{},
+    repos:[],
     loading:false,
     alert:null
   };
@@ -29,19 +30,34 @@ import {Alert} from './components/layout/Alert';
 
     this.setState({users: res.data.items, loading:false});        
   }
-
+  
+  //Get single Github user
   getUser= async username => {
     this.setState({loading:true});
 
     const res=await axios.get(
-                       `https://api.github.com/users${username}&client_id= ${
-                process.env.REACT_APP_GITHUB_CLIENT_ID}
-              &client_secret=${
-                process.env.REACT_APP_GITHUB_CLIENT_SECRET
-              }`);
+                       `https://api.github.com/users/${username}?client_id= ${
+                        process.env.REACT_APP_GITHUB_CLIENT_ID}
+                        &client_secret=${
+                        process.env.REACT_APP_GITHUB_CLIENT_SECRET
+                        }`); 
 
     this.setState({user: res.data, loading:false});   
-  }
+  } 
+
+  //Get user's repos
+  getUserRepos= async username => {
+    this.setState({loading:true});
+
+    const res=await axios.get(
+                       `https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id= ${
+                        process.env.REACT_APP_GITHUB_CLIENT_ID}
+                        &client_secret=${
+                        process.env.REACT_APP_GITHUB_CLIENT_SECRET
+                        }`); 
+
+    this.setState({repos: res.data, loading:false});   
+  } 
   
   clearUsers=()=> this.setState({users:[], loading:false});
 
@@ -50,7 +66,7 @@ import {Alert} from './components/layout/Alert';
   }
 
   render(){
-    const{users,loading,user}=this.state;
+    const{users,loading,user,repos}=this.state;
 
       return (
         <Router>
@@ -77,7 +93,9 @@ import {Alert} from './components/layout/Alert';
             <Route path='/user/:login' element={
             <>
             <User getUser={this.getUser} 
+                  getUserRepos={this.getUserRepos}
                     user={user}
+                    repos={repos}
                     loading={loading}
               />
             </>
@@ -89,5 +107,5 @@ import {Alert} from './components/layout/Alert';
     );
  }
 }
-
+        
 export default App;
